@@ -1,0 +1,162 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "1.0.0",
+    "title": "NiftyBridge AI Assistant"
+  },
+  "paths": {
+    "/api/send": {
+      "post": {
+        "tags": [
+          "Message"
+        ],
+        "summary": "Send message",
+        "description": "Endpoint for sending a message and receiving a response.\n\nParameters:\n- x_api_key_token: API key token provided in the request header\n- message: The message to be sent (input)\n\nReturns:\n- Response: The generated AI response message",
+        "operationId": "send_message_api_send_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key-Token"
+            },
+            "name": "x-api-key-token",
+            "description": "Add openai_api_key",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "description": "Write a massage to NiftyBridge AI Assistant",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Message"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidApiToken"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Response exceeds maximum token limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaxTokenLimit"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Message": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "InvalidApiToken": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Message",
+            "example": "Invalid API key"
+          }
+        }
+      },
+      "MaxTokenLimit": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Message",
+            "example": "Response exceeds maximum token limit."
+          }
+        }
+      }
+    }
+  }
+}
