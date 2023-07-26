@@ -2,28 +2,24 @@ import os
 
 import uvicorn
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from datetime import datetime
 
 from starlette.requests import Request
 
 from app.routes.api_message import app_message
+from app.utils.constants import get_file_path
+from app.utils.helper_langchain import validate_token
 
 app = FastAPI()
 
 app.include_router(
     app_message,
-    prefix='/api'
+    prefix='/api',
+    dependencies=[Depends(validate_token)],
 )
 
-if os.environ.get("DOCKER_ENV"):
-    # Running in Docker container
-    file_path = "/code/app/templates/openapi.json"
-else:
-    # Running locally
-    file_path = "templates/openapi.json"
-
-with open(file_path) as json_file:
+with open(get_file_path("templates", "openapi.json")) as json_file:
     custom_openapi = json.load(json_file)
 app.openapi_schema = custom_openapi
 

@@ -1,16 +1,15 @@
-from fastapi import APIRouter, HTTPException, Header
+from fastapi import APIRouter, HTTPException
 
 from app.models.message import Message
 from app.utils.constants import API_KEY, MAX_TOKENS, MODEL_NAME, MAX_TOKEN_LIMIT
-from app.utils.helper_langchain import load_pdf_file, split_document, initialize_embeddings_and_vectorstore, \
-    validate_token
+from app.utils.helper_langchain import load_pdf_file, split_document, initialize_embeddings_and_vectorstore
 from langchain import OpenAI, PromptTemplate
 
 app_message = APIRouter()
 
 
 @app_message.post("/send", tags=["Message"])
-def send_message(message: Message, x_api_key_token: str = Header(...)):
+def send_message(message: Message):
     """
     Endpoint for sending a message and receiving a response.
 
@@ -21,11 +20,9 @@ def send_message(message: Message, x_api_key_token: str = Header(...)):
     Returns:
     - Response: The generated response message
     """
-
     documents = load_pdf_file()
     chunks = split_document(documents)
     vectorstore = initialize_embeddings_and_vectorstore(chunks)
-    validate_token(x_api_key_token)
 
     query_message = message.message
 
