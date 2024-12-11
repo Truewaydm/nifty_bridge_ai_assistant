@@ -4,7 +4,7 @@ Fast App using LangChain framework
 
 This is a FastAPI app that interacts with the OpenAI API and performs similarity search on a vectorstore. It provides an endpoint for sending a message and receiving a response.
 
-[LangChain docs](https://python.langchain.com/docs/get_started/introduction.html)
+[LangChain docs](https://python.langchain.com/docs/tutorials/)
 
 ## Prerequisites
 
